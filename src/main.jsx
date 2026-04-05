@@ -9,6 +9,9 @@ import About from './components/About/About.jsx';
 import Contact from './components/Contact/Contact.jsx';
 import User from './components/User/User.jsx';
 import Github, { githubInfo } from './components/Github/Github.jsx';
+import Posts from './components/Posts/Posts.jsx';
+import Post from './components/Posts/Post.jsx';
+import PostDetail from './components/Posts/PostDetail.jsx';
 
 // const router = createBrowserRouter([
 //   {
@@ -33,19 +36,25 @@ import Github, { githubInfo } from './components/Github/Github.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path='/' Component={Root}>
-      <Route path='' Component={Home} />
-      <Route path='about' Component={About} />
-      <Route path='contact' Component={Contact} />
-      <Route path='user/:userId' Component={User} />
+    <Route path="/" Component={Root}>
+      <Route path="" Component={Home} />
+      <Route path="about" Component={About} />
+      <Route path="contact" Component={Contact} />
+      <Route path="user/:userId" Component={User} />
+      <Route loader={githubInfo} path="github" Component={Github} />
       <Route
-        loader={githubInfo}
-        path='github'
-        Component={Github}
+        path="posts"
+        Component={Posts}
+        loader={() => fetch("https://jsonplaceholder.typicode.com/posts")}
       />
-    </Route>
-  )
-)
+      <Route
+        path="posts/:postId"
+        loader={({params}) => fetch(`https://jsonplaceholder.typicode.com/posts/${params.postId}`)}
+        Component={PostDetail}
+      />
+    </Route>,
+  ),
+);
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
